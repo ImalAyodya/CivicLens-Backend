@@ -1,32 +1,25 @@
 {
   "name": "civiclens-backend",
   "version": "1.0.0",
-  "description": "⚙️ Node.js + Express backend API for the Politician Tracker mobile application.  Provides secure REST APIs to manage politicians, promises, performance data, and user accounts. Integrates with PostgreSQL for reliable data storage.",
-  "main": "index.js",
+  "description": "Backend for CivicLens application",
+  "main": "src/index.js",
   "scripts": {
-  "start": "node src/index.js",
-  "dev": "nodemon src/index.js"
-}
-,
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ImalAyodya/CivicLens-Backend.git"
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "jest"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/ImalAyodya/CivicLens-Backend/issues"
-  },
-  "homepage": "https://github.com/ImalAyodya/CivicLens-Backend#readme",
   "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.5.0",
+    "dotenv": "^16.3.1",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.1",
-    "express": "^5.1.0",
-    "mongoose": "^8.17.1"
+    "firebase-admin": "^11.10.1",
+    "moment": "^2.29.4",
+    "helmet": "^7.0.0",
+    "express-validator": "^7.0.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.0.1",
+    "jest": "^29.6.4"
   }
 }
