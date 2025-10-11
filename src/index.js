@@ -39,9 +39,6 @@ app.use('/promise/api', ministryGrowthNewsRoutes);
 const ministryPerformanceRoutes = require('./routes/ministryPerformanceRoutes');
 app.use('/promise/api', ministryPerformanceRoutes);
 
-const userRoutes = require('./routes/userRoutes');
-app.use('/promise/api', userRoutes);
-
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
