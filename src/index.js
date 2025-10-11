@@ -8,6 +8,7 @@ const roleRoutes = require("./routes/roleRoutes");
 const partyRoutes = require("./routes/partyRoutes");
 const politicianRoutes = require("./routes/politicianRoutes");
 const levelRoutes = require("./routes/levelRoutes");
+const virtualElectionRoutes = require("./routes/virtualElectionRoutes");
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use("/api/roles", roleRoutes);
 app.use("/api/parties", partyRoutes);
 app.use("/api/politicians", politicianRoutes);
 app.use("/api/levels", levelRoutes);
+app.use("/api/virtualElections", virtualElectionRoutes);
 
 
 // MongoDB connection
