@@ -6,8 +6,17 @@ const router = express.Router();
 // GET all elections
 router.get('/', electionController.getAllElections);
 
-// GET election by ID
-router.get('/:id', electionController.getElectionById);
+// GET past elections
+router.get('/past', electionController.getElectionById);
+
+// GET past election by year
+router.get('/past/:year', electionController.getPastElectionByYear);
+
+// GET election years
+router.get('/years', electionController.getElectionById);
+
+// GET upcoming elections
+router.get('/upcoming', electionController.getElectionById);
 
 // GET election countdown
 router.get('/:id/countdown', electionController.getElectionCountdown);
@@ -26,5 +35,8 @@ router.post('/:id/facts', electionController.addElectionFact);
 
 // POST send random fact
 router.post('/:id/send-fact', electionController.sendRandomFact);
+
+// GET specific election by ID (Keep this as the last route to avoid conflicts)
+router.get('/:id', electionController.getElectionById);
 
 module.exports = router;

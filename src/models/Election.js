@@ -16,6 +16,10 @@ const electionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  year: {
+    type: Number,  // Make sure this field is defined
+    required: true
+  },
   type: {
     type: String,
     enum: ['presidential', 'parliamentary', 'provincial', 'local'],

@@ -23,7 +23,40 @@ const electionController = {
   // Get election by ID
   async getElectionById(req, res) {
     try {
-      const election = await Election.findById(req.params.id);
+      const { id } = req.params;
+      
+      // Handle special route parameters
+      if (id === 'past') {
+        // Return past elections
+        const pastElections = await Election.find({ 
+          status: 'completed' 
+        }).sort({ date: -1 });
+        
+        return res.status(200).json(pastElections);
+      }
+      
+      if (id === 'upcoming') {
+        // Return upcoming elections
+        const upcomingElections = await Election.find({ 
+          status: 'upcoming',
+          date: { $gt: new Date() }
+        }).sort({ date: 1 });
+        
+        return res.status(200).json(upcomingElections);
+      }
+      
+      // Add handler for "years" parameter to return just the election years
+      if (id === 'years') {
+        // Get distinct years from all elections
+        const elections = await Election.find({}, { year: 1 }).sort({ year: -1 });
+        const years = elections.map(election => election.year)
+          .filter((year, index, self) => self.indexOf(year) === index); // Remove duplicates
+        
+        return res.status(200).json(years);
+      }
+      
+      // Regular ObjectId lookup for specific election
+      const election = await Election.findById(id);
       
       if (!election) {
         return res.status(404).json({ message: 'Election not found' });
@@ -64,6 +97,7 @@ const electionController = {
     }
   },
 
+  
   // Update election
   async updateElection(req, res) {
     try {
@@ -181,6 +215,39 @@ const electionController = {
       res.status(200).json(result);
     } catch (error) {
       console.error('Error sending random fact:', error);
+      res.status(500).json({ message: 'Server error', error: error.message });
+    }
+  },
+
+  // Get past election by year
+  async getPastElectionByYear(req, res) {
+    try {
+      const { year } = req.params;
+      
+      // Convert string year to number for comparison
+      const yearNum = parseInt(year, 10);
+      
+      if (isNaN(yearNum)) {
+        return res.status(400).json({ 
+          message: 'Invalid year parameter. Year must be a number.' 
+        });
+      }
+      
+      // Find past elections for the specific year
+      const election = await Election.findOne({ 
+        year: yearNum,
+        status: 'completed'
+      });
+      
+      if (!election) {
+        return res.status(404).json({ 
+          message: `No past election found for year ${year}` 
+        });
+      }
+      
+      res.status(200).json(election);
+    } catch (error) {
+      console.error('Error getting past election by year:', error);
       res.status(500).json({ message: 'Server error', error: error.message });
     }
   }

@@ -8,6 +8,7 @@ const helmet = require('helmet');
 const { initScheduler } = require('./utils/scheduler');
 
 // Import routes
+const authRoutes = require('./routes/authRoutes');
 const electionRoutes = require('./routes/electionRoutes');
 const newsRoutes = require('./routes/newsRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
@@ -22,13 +23,14 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/elections', electionRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/users', userRoutes);
 
 // Database connection
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('Connected to MongoDB');
     
@@ -39,7 +41,7 @@ mongoose.connect(process.env.MONGODB_URI)
 
 // Test route
 app.get('/', (req, res) => {
-  res.send('Politician Tracker Backend is running...');
+  res.send('CivicLens Backend is running - Track Sri Lankan politician promises and performance');
 });
 
 // Start server

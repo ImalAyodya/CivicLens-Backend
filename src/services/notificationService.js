@@ -119,14 +119,20 @@ const notificationService = {
   async createAndSendNotification(title, message, type, reference = null, referenceModel = null, sendToAll = true, userIds = []) {
     try {
       // Create notification record
-      const notification = new Notification({
+      const notificationData = {
         title,
         message,
         type,
-        reference,
-        referenceModel,
         sentToAll: sendToAll,
-      });
+      };
+      
+      // Only add reference fields if both are provided
+      if (reference && referenceModel) {
+        notificationData.reference = reference;
+        notificationData.referenceModel = referenceModel;
+      }
+      
+      const notification = new Notification(notificationData);
       
       // If not sent to all, add specific recipients
       if (!sendToAll && userIds.length > 0) {

@@ -83,6 +83,60 @@ const notificationController = {
     }
   },
 
+  // Mark notification as read using authenticated user
+  async markAsRead(req, res) {
+    try {
+      const { notificationId } = req.params;
+      const userId = req.user._id; // Get user ID from authenticated request
+      
+      const notification = await Notification.findById(notificationId);
+      
+      if (!notification) {
+        return res.status(404).json({ message: 'Notification not found' });
+      }
+      
+      // If the notification was sent to all users, add this user to recipients and mark as read
+      if (notification.sentToAll) {
+        const existingRecipient = notification.recipients.find(
+          recipient => recipient.userId && recipient.userId.toString() === userId.toString()
+        );
+        
+        if (existingRecipient) {
+          existingRecipient.read = true;
+          existingRecipient.readAt = new Date();
+        } else {
+          notification.recipients.push({
+            userId,
+            read: true,
+            readAt: new Date()
+          });
+        }
+      } else {
+        // For targeted notifications, find and update the specific recipient
+        const recipientIndex = notification.recipients.findIndex(
+          recipient => recipient.userId && recipient.userId.toString() === userId.toString()
+        );
+        
+        if (recipientIndex === -1) {
+          return res.status(400).json({ message: 'User is not a recipient of this notification' });
+        }
+        
+        notification.recipients[recipientIndex].read = true;
+        notification.recipients[recipientIndex].readAt = new Date();
+      }
+      
+      await notification.save();
+      res.status(200).json({ 
+        success: true,
+        message: 'Notification marked as read',
+        notification
+      });
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+      res.status(500).json({ message: 'Server error', error: error.message });
+    }
+  },
+
   // Update user notification preferences
   async updateNotificationPreferences(req, res) {
     try {
@@ -138,6 +192,33 @@ const notificationController = {
       res.status(201).json(result);
     } catch (error) {
       console.error('Error sending custom notification:', error);
+      res.status(500).json({ message: 'Server error', error: error.message });
+    }
+  },
+
+  // Send a test notification
+  async sendTestNotification(req, res) {
+    try {
+      const { userId } = req.body;
+      
+      // Create a test notification - set an empty reference field
+      const result = await notificationService.createAndSendNotification(
+        'Test Notification',
+        'This is a test notification from CivicLens',
+        'system',
+        null,  // No reference ID
+        null,  // No reference model
+        !userId, // If no userId provided, send to all
+        userId ? [userId] : []
+      );
+      
+      res.status(200).json({
+        success: true,
+        message: 'Test notification sent successfully',
+        notification: result.notification
+      });
+    } catch (error) {
+      console.error('Error sending test notification:', error);
       res.status(500).json({ message: 'Server error', error: error.message });
     }
   }
