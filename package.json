@@ -12,6 +12,10 @@
     "seed:news": "node src/utils/seedNews.js",
     "seed:all": "node src/utils/seedDatabase.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ImalAyodya/CivicLens-Backend.git"
+  },
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
@@ -22,7 +26,10 @@
     "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.2",
     "moment": "^2.29.4",
-    "mongoose": "^7.5.0"
+    "mongoose": "^7.5.0",
+    "cloudinary": "^2.7.0",
+    "multer": "^2.0.2",
+    "path": "^0.12.7"
   },
   "devDependencies": {
     "jest": "^29.6.4",
