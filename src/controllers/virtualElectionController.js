@@ -54,10 +54,24 @@ const virtualElectionController = {
 
   async addVote(req, res) {
     try {
-      const { electionId, politicianId, voterId } = req.body;
+      // Get voterId from authenticated user token
+      const voterId = req.user.userId;
+      
+      if (!voterId) {
+        return res.status(401).json({ error: "User not authenticated" });
+      }
+      
+      const { electionId, politicianId } = req.body;
+      
+      // Validate required fields
+      if (!electionId || !politicianId) {
+        return res.status(400).json({ error: "electionId and politicianId are required" });
+      }
+      
       const vote = await virtualElectionService.addVote(electionId, politicianId, voterId);
       res.status(201).json({ message: "Vote recorded successfully", vote });
     } catch (error) {
+      console.error("Error recording vote:", error);
       res.status(400).json({ error: error.message });
     }
   },
@@ -67,6 +81,16 @@ const virtualElectionController = {
       const votes = await virtualElectionService.getVotesByElection(req.params.electionId);
       res.status(200).json(votes);
     } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  },
+
+  async getCandidatesByElection(req, res) {
+    try {
+      const candidates = await virtualElectionService.getCandidatesByElection(req.params.electionId);
+      res.status(200).json({ candidates });
+    } catch (error) {
+      console.error("Error getting candidates:", error);
       res.status(400).json({ error: error.message });
     }
   },

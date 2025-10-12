@@ -4,7 +4,7 @@ const VoteSchema = new mongoose.Schema(
   {
     election: { type: mongoose.Schema.Types.ObjectId, ref: "VirtualElection", required: true },
     candidate: { type: mongoose.Schema.Types.ObjectId, ref: "Politician", required: true },
-    voterId: { type: String, required: true }, // could be user id, device id, or hashed identifier
+    voterId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // Reference to User who voted
   },
   { timestamps: true }
 );

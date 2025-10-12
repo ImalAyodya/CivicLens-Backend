@@ -45,6 +45,28 @@ const virtualElectionService = {
       votes: c.votes,
     }));
   },
+
+  async getCandidatesByElection(electionId) {
+    const election = await VirtualElection.findById(electionId).populate({
+      path: "candidates.politician",
+      populate: { path: "party" }
+    });
+    
+    if (!election) throw new Error("Election not found");
+    
+    return election.candidates.map((c) => ({
+      _id: c.politician._id,
+      name: c.politician.name,
+      party: c.politician.party ? c.politician.party.fullName : "Independent",
+      partyAbbreviation: c.politician.party ? c.politician.party.abbreviation : "",
+      partyLogo: c.politician.party ? c.politician.party.logo : null,
+      partyColor: c.politician.party ? c.politician.party.color : "#000000",
+      img: c.politician.image || null,
+      votes: c.votes,
+      region: c.politician.region,
+      yearsOfService: c.politician.yearsOfService
+    }));
+  },
 };
 
 module.exports = virtualElectionService;
