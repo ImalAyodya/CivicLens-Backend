@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
+
 // Import routes
 const adminRoutes = require('./routes/adminRoutes');
 const roleRoutes = require("./routes/roleRoutes");
@@ -23,9 +24,12 @@ const electionRoutes = require('./routes/electionRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 
 const app = express();
+app.use(cors({
+  origin: '*', // Or specify your frontend URL for more security
+  credentials: true
+}));
 
 // Middleware
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
